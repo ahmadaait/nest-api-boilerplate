@@ -9,6 +9,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/libs/jwt-auth/jwt-auth.guard';
 import { UtilsService } from 'src/utils/utils.service';
 import { AuthService } from './auth.service';
@@ -16,6 +17,7 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -53,6 +55,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('accessToken')
   @Get('profile')
   async profile(@Request() req) {
     const dataProfile = await this.authService.profile(req.user.user_id);
@@ -63,6 +66,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('accessToken')
   @Patch('update-user')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async updateUser(@Request() req, @Body() data: UpdateUserDto) {

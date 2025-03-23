@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/libs/jwt-auth/jwt-auth.guard';
 import { Role } from 'src/libs/role/role.decorator';
 import { RolesGuard } from 'src/libs/role/role.guard';
@@ -18,6 +19,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(
@@ -33,6 +35,7 @@ export class UserController {
   @Role(['admin'])
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
+  @ApiBearerAuth('accessToken')
   async create(@Body() createUserDto: CreateUserDto) {
     return this.util.response.json({
       data: await this.userService.create(createUserDto),
@@ -47,6 +50,9 @@ export class UserController {
   @Role(['admin'])
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
+  @ApiBearerAuth('accessToken')
+  @ApiQuery({ name: 'page', type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', type: Number, example: 10 })
   async findAll(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
@@ -69,6 +75,7 @@ export class UserController {
    */
   @Get(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('accessToken')
   async findOne(@Param('id') id: number) {
     return this.util.response.json({
       data: await this.userService.findOne(id),
@@ -85,6 +92,7 @@ export class UserController {
   @Role(['admin'])
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
+  @ApiBearerAuth('accessToken')
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.util.response.json({
       data: await this.userService.update(id, updateUserDto),
@@ -100,6 +108,7 @@ export class UserController {
   @Role(['admin'])
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
+  @ApiBearerAuth('accessToken')
   async remove(@Param('id') id: number) {
     return this.util.response.json({
       data: await this.userService.remove(id),
