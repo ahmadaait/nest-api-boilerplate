@@ -6,6 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.staging
+    env_file: .env.staging
     ports:
       - "8081:8081"
     environment:
