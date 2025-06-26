@@ -34,6 +34,7 @@ RUN yarn install --frozen-lockfile --production
 
 # Copy built files from builder
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
 
 # If you need things like env config files, copy them here:
 COPY --from=builder /app/.env ./

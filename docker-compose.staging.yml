@@ -5,11 +5,18 @@ services:
     container_name: nest-api-boilerplate-stg
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.staging
+    env_file: .env.staging
     ports:
-      - "8081:8080"
+      - "8081:8081"
     environment:
       - NODE_ENV=production
     volumes:
       - /app/node_modules
     restart: unless-stopped
+    networks:
+      - mysql
+
+networks:
+  mysql:
+    external: true
